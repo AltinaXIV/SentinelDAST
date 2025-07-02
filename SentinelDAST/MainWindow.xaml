@@ -1,0 +1,175 @@
+﻿<Window x:Class="SentinelDAST.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        Title="Sentinel DAST" Height="768" Width="1200"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        FontFamily="{materialDesign:MaterialDesignFont}">
+
+    <Window.Resources>
+        <Style x:Key="ControlButtonStyle" TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Padding" Value="8,0"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="MinWidth" Value="80"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" /> <!-- Header -->
+            <RowDefinition Height="Auto" /> <!-- Target Input -->
+            <RowDefinition Height="*" /> <!-- Main Content -->
+            <RowDefinition Height="Auto" /> <!-- Status Bar -->
+        </Grid.RowDefinitions>
+
+        <!-- Header with application title -->
+        <materialDesign:ColorZone Grid.Row="0" Mode="PrimaryMid" Padding="16" materialDesign:ElevationAssist.Elevation="Dp4">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="Web" Height="30" Width="30" VerticalAlignment="Center" />
+                <TextBlock Margin="16,0,0,0" VerticalAlignment="Center" FontSize="20" FontWeight="Bold">Sentinel DAST</TextBlock>
+            </StackPanel>
+        </materialDesign:ColorZone>
+
+        <!-- Target URL Input and Control Buttons -->
+        <Grid Grid.Row="1" Margin="16,16,16,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Target URL Input -->
+            <materialDesign:Card Grid.Column="0" Padding="8" materialDesign:ElevationAssist.Elevation="Dp2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <materialDesign:PackIcon Kind="Link" Width="24" Height="24" VerticalAlignment="Center" Margin="8,0" />
+                    <TextBox Grid.Column="1" materialDesign:HintAssist.Hint="Enter target URL (e.g., https://example.com)" 
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}" 
+                             VerticalAlignment="Center" x:Name="TargetUrlTextBox" />
+                </Grid>
+            </materialDesign:Card>
+
+            <!-- Control Buttons -->
+            <Button Grid.Column="1" Style="{StaticResource ControlButtonStyle}" 
+                    Background="#0F766E" BorderBrush="#0F766E" x:Name="StartButton">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Play" Height="20" Width="20" VerticalAlignment="Center" />
+                    <TextBlock Margin="4,0,0,0" VerticalAlignment="Center">Start</TextBlock>
+                </StackPanel>
+            </Button>
+
+            <Button Grid.Column="2" Style="{StaticResource ControlButtonStyle}" 
+                    Background="#0369A1" BorderBrush="#0369A1" x:Name="PauseButton" IsEnabled="False">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Pause" Height="20" Width="20" VerticalAlignment="Center" />
+                    <TextBlock Margin="4,0,0,0" VerticalAlignment="Center">Pause</TextBlock>
+                </StackPanel>
+            </Button>
+
+            <Button Grid.Column="3" Style="{StaticResource ControlButtonStyle}" 
+                    Background="#7E22CE" BorderBrush="#7E22CE" x:Name="StopButton" IsEnabled="False">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Stop" Height="20" Width="20" VerticalAlignment="Center" />
+                    <TextBlock Margin="4,0,0,0" VerticalAlignment="Center">Stop</TextBlock>
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <!-- Main Content Area (Split into two sections: SiteMap + Findings) -->
+        <Grid Grid.Row="2" Margin="16,8,16,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="3*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Site Map Tree View -->
+            <materialDesign:Card Grid.Column="0" Margin="0,0,8,0" materialDesign:ElevationAssist.Elevation="Dp3">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Margin="16,16,16,8" FontWeight="Bold" FontSize="16">Site Map</TextBlock>
+                    <TreeView x:Name="SiteMapTreeView" DockPanel.Dock="Bottom" Margin="8,0,8,8">
+                        <!-- Site map items will be populated programmatically -->
+                        <TreeViewItem Header="No scan has been run yet" IsEnabled="False" />
+                    </TreeView>
+                </DockPanel>
+            </materialDesign:Card>
+
+            <!-- Findings Section (with Tabs for Findings List and Details) -->
+            <materialDesign:Card Grid.Column="1" Margin="8,0,0,0" materialDesign:ElevationAssist.Elevation="Dp3">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Margin="16,16,16,8" FontWeight="Bold" FontSize="16">Findings</TextBlock>
+
+                    <TabControl materialDesign:ColorZoneAssist.Mode="Standard" Margin="8">
+                        <!-- Findings List Tab -->
+                        <TabItem Header="Vulnerabilities">
+                            <DockPanel>
+                                <!-- Filter Controls -->
+                                <Grid DockPanel.Dock="Top" Margin="0,8,0,16">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0" materialDesign:HintAssist.Hint="Filter findings..." 
+                                            Style="{StaticResource MaterialDesignOutlinedTextBox}" 
+                                            Margin="0,0,16,0" x:Name="FilterTextBox" />
+
+                                    <Button Grid.Column="1" Style="{StaticResource MaterialDesignOutlinedButton}" 
+                                            Content="Export Report" x:Name="ExportReportButton" />
+                                </Grid>
+
+                                <!-- Findings List -->
+                                <DataGrid x:Name="FindingsDataGrid" AutoGenerateColumns="False" 
+                                        materialDesign:DataGridAssist.CellPadding="8" 
+                                        materialDesign:DataGridAssist.ColumnHeaderPadding="8">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Severity" Binding="{Binding Severity}" />
+                                        <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="*" />
+                                        <DataGridTextColumn Header="URL" Binding="{Binding Url}" Width="2*" />
+                                        <DataGridTextColumn Header="Parameter" Binding="{Binding Parameter}" />
+                                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </DockPanel>
+                        </TabItem>
+
+                        <!-- Finding Details Tab -->
+                        <TabItem Header="Details">
+                            <ScrollViewer>
+                                <StackPanel Margin="8">
+                                    <TextBlock Text="Select a finding to view details" 
+                                            HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center" 
+                                            FontStyle="Italic" 
+                                            Foreground="{DynamicResource MaterialDesignBodyLight}" />
+                                    <!-- Finding details will be populated programmatically -->
+                                </StackPanel>
+                            </ScrollViewer>
+                        </TabItem>
+                    </TabControl>
+                </DockPanel>
+            </materialDesign:Card>
+        </Grid>
+
+        <!-- Status Bar -->
+        <materialDesign:ColorZone Grid.Row="3" Mode="Standard" Padding="8" materialDesign:ElevationAssist.Elevation="Dp4">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                    <TextBlock x:Name="ScanProgressText" Margin="8,0" VerticalAlignment="Center">Ready</TextBlock>
+                    <ProgressBar x:Name="ScanProgressBar" Width="100" Height="10" Maximum="100" Value="0" Margin="8,0" />
+                </StackPanel>
+                <TextBlock x:Name="StatusText" VerticalAlignment="Center" Margin="8,0">Status: Idle</TextBlock>
+            </DockPanel>
+        </materialDesign:ColorZone>
+    </Grid>
+</Window>
