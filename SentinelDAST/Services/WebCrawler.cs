@@ -285,7 +285,7 @@ namespace SentinelDAST.Services {
             }
         }
 
-        CrawlResult ParseHtml(string html, Uri baseUri) {
+        static CrawlResult ParseHtml(string html, Uri baseUri) {
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
 
